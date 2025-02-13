@@ -1,13 +1,13 @@
 #include <stdio.h>
 #include <string.h>
-#include <ctype.h>  // Para usar isdigit, isalpha, etc.
-#include <stdlib.h> // Para usar atof
+#include <ctype.h>
+#include <stdlib.h>
 
-#define MAX_CIDADES 32  // 8 estados * 4 cidades por estado
+#define MAX_CIDADES 32
 
 typedef struct {
     char estado;
-    char codigo[4];  // A01, B02, etc.
+    char codigo[4];
     char nome[50];
     int populacao;
     float area;
@@ -19,65 +19,60 @@ Cidade cidades[MAX_CIDADES];
 int total_cidades = 0;
 
 int validar_estado(char estado) {
-    estado = toupper(estado);  // Converte para maiúscula
+    estado = toupper(estado);
     return (estado >= 'A' && estado <= 'H');
 }
 
 int validar_codigo(const char *codigo) {
-    // Verifica se o código tem 1 ou 2 dígitos e está entre 1 e 4
     int len = strlen(codigo);
     if (len < 1 || len > 2) {
         return 0;
     }
     for (int i = 0; i < len; i++) {
         if (!isdigit(codigo[i])) {
-            return 0;  // Se não for um dígito, é inválido
+            return 0;
         }
     }
-    int numero = atoi(codigo);  // Converte para inteiro
+    int numero = atoi(codigo);
     return (numero >= 1 && numero <= 4);
 }
 
 void formatar_codigo(char *codigo) {
-    // Adiciona um zero à frente se o código tiver apenas 1 dígito
     if (strlen(codigo) == 1) {
-        codigo[1] = codigo[0];  // Move o dígito para a segunda posição
-        codigo[0] = '0';        // Adiciona o zero na primeira posição
-        codigo[2] = '\0';       // Finaliza a string
+        codigo[1] = codigo[0];
+        codigo[0] = '0';
+        codigo[2] = '\0';
     }
 }
 
 int validar_nome(const char *nome) {
-    // Verifica se o nome contém apenas letras e espaços
     for (int i = 0; nome[i] != '\0'; i++) {
         if (!isalpha(nome[i]) && nome[i] != ' ') {
-            return 0;  // Se não for letra ou espaço, é inválido
+            return 0;
         }
     }
     return 1;
 }
 
 int validar_numero_inteiro(const char *str) {
-    // Verifica se a string contém apenas dígitos
     for (int i = 0; str[i] != '\0'; i++) {
         if (!isdigit(str[i])) {
-            return 0;  // Se não for um dígito, é inválido
+            return 0;
         }
     }
     return 1;
 }
 
 int validar_numero_decimal(const char *str) {
-    // Verifica se a string contém apenas dígitos e no máximo um ponto
     int ponto_encontrado = 0;
     for (int i = 0; str[i] != '\0'; i++) {
         if (str[i] == '.') {
             if (ponto_encontrado) {
-                return 0;  // Mais de um ponto é inválido
+                return 0;
             }
             ponto_encontrado = 1;
         } else if (!isdigit(str[i])) {
-            return 0;  // Se não for um dígito ou ponto, é inválido
+            return 0;
         }
     }
     return 1;
@@ -93,18 +88,16 @@ void cadastrar_carta() {
 
     printf("Cadastro de Carta de Cidade\n");
 
-    // Validação do estado
     do {
         printf("Digite o estado (A-H): ");
         scanf(" %c", &nova_cidade.estado);
-        nova_cidade.estado = toupper(nova_cidade.estado);  // Converte para maiúscula
+        nova_cidade.estado = toupper(nova_cidade.estado);
         if (!validar_estado(nova_cidade.estado)) {
             printf("Estado inválido! Digite uma letra de A a H.\n");
         }
     } while (!validar_estado(nova_cidade.estado));
 
-    // Validação do código da carta
-    char codigo_temp[4];  // Armazena temporariamente a entrada do usuário
+    char codigo_temp[4];
     do {
         printf("Digite o código da carta (1-4 ou 01-04): ");
         scanf("%s", codigo_temp);
@@ -113,11 +106,9 @@ void cadastrar_carta() {
         }
     } while (!validar_codigo(codigo_temp));
 
-    // Formata o código para ter dois dígitos (01, 02, etc.)
     formatar_codigo(codigo_temp);
     strcpy(nova_cidade.codigo, codigo_temp);
 
-    // Validação do nome da cidade
     do {
         printf("Digite o nome da cidade: ");
         scanf(" %[^\n]", nova_cidade.nome);
@@ -126,7 +117,6 @@ void cadastrar_carta() {
         }
     } while (!validar_nome(nova_cidade.nome));
 
-    // Validação da população
     char populacao_temp[20];
     do {
         printf("Digite a população: ");
@@ -138,7 +128,6 @@ void cadastrar_carta() {
         }
     } while (!validar_numero_inteiro(populacao_temp));
 
-    // Validação da área
     char area_temp[20];
     do {
         printf("Digite a área em km²: ");
@@ -150,10 +139,9 @@ void cadastrar_carta() {
         }
     } while (!validar_numero_decimal(area_temp));
 
-    // Validação do PIB
     char pib_temp[20];
     do {
-        printf("Digite o PIB em bilhões: ");
+        printf("Digite o PIB: ");
         scanf("%s", pib_temp);
         if (!validar_numero_decimal(pib_temp)) {
             printf("PIB inválido! Digite apenas números e no máximo um ponto.\n");
@@ -162,7 +150,6 @@ void cadastrar_carta() {
         }
     } while (!validar_numero_decimal(pib_temp));
 
-    // Validação do número de pontos turísticos
     char pontos_temp[20];
     do {
         printf("Digite o número de pontos turísticos: ");
